@@ -1,0 +1,127 @@
+QUESTION 13A
+== CONFLICT ==
+
+T1:R(X)       W(X)
+T2:     R(X)        W(X)
+
+Conflicting pairs:
+T1 W(X) and T2 W(X)         T1->T2
+T2 R(X) before T1 W(X)      T2->T1
+
+There is a loop therefore it is not conflict serialisable
+
+== VIEW ==
+X: T1 does the initial read, T2 does the final write
+
+So, T2;T1 won't work 
+
+T1;T2
+T1:R(X) W(X)
+T2:         R(X) W(X)
+
+T2 reads the value of X modified by T1, however in the og schedule it reads the initial value of X.
+
+Therefore this schedule is not view serialisable.
+
+QUESTION 13B
+== CONFLICT ==
+
+T1:W(X)       R(Y)
+T2:     R(Y)       R(X)
+
+Pairs:
+T1 W(X) before T2 R(X)
+
+The schedule is conflict serialisable
+
+== VIEW ==
+
+T1:W(X) R(Y)
+T2:           R(Y) R(X)
+
+The schedule is view serialisable
+
+QUESTION 13C
+== CONFLICT ==
+
+T1:R(X)                R(Y)
+T2:     R(Y)      R(X)
+T3:          W(X) 
+
+Pairs:
+T1 R(X) before T3 W(X)
+T3 W(X) before T2 R(X)
+
+No cycle therefore it's conflict serialisable
+
+== VIEW ==
+
+We have T1;T2;T3 (doesnt work) or T1;T3;T2
+T1:R(X) R(Y)
+T2:                 R(Y) R(X)
+T3:           W(X) 
+
+this works i reckon. view serialisable
+
+QUESTION 13D
+== CONFLICT ==
+
+T1:R(X) R(Y) W(X)          W(X)
+T2:               R(Y)           R(Y)
+T3:                    W(Y) 
+
+Pairs:
+T1 R(Y) before T3 W(Y)
+T3 W(Y) before T2 R(Y)
+T2 R(Y) before T3 W(Y)
+
+There is a pair, conflict serialisable
+
+== VIEW ==
+
+T1 has to occur before T3
+T3 has to occur before T2
+T1;T3;T2
+T1:R(X) R(Y) W(X) W(X)
+T2:                          R(Y) R(Y)
+T3:                    W(Y) 
+
+No, it's not view serialisable
+
+QUESTION 13E
+== CONFLICT ==
+
+T1:R(X)       W(X)
+T2:     W(X)
+T3:                 W(X)
+
+Pairs: 
+T2 W(X) before T1 W(X)
+T2 W(X) before T3 W(X)
+T1 W(X) before T3 W(X)
+T1 R(X) before T2 W(X)
+T1 R(X) before T3 W(X)
+
+yay there's a loop therefore not conflict serialisable 
+
+== VIEW ==
+
+X: T1 does initial read, T3 does final write 
+
+So T1;T2;T3
+
+T1:R(X) W(X)
+T2:           W(X)
+T3:                 W(X)
+
+it works. view serialisable.
+
+QUESTION 14
+== CHECK CONFLICT == 
+T1:             R(X)W(X)W(Z)        R(Y)W(Y)
+T2: R(Y)W(Y)R(Y)            W(Y)R(X)        W(X)R(V)W(V)
+
+T2 R(Y) before T1 W(Y)
+T1 W(X) before T2 R(X)
+
+already got a cycle lol, the schedule is not conflict serialisable
